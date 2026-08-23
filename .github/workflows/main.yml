@@ -1,7 +1,5 @@
 name: Build GKS Hymn Book APK
 
-# Produces an installable, signed release APK you can download from the run's
-# "Artifacts" section. Runs on every push and can be started manually.
 on:
   push:
     branches: [ main, master ]
@@ -25,10 +23,6 @@ jobs:
 
       - name: Create a signing keystore
         run: |
-          # A self-signed keystore is generated so the APK is signed and
-          # installable. To publish UPDATES that upgrade in place, replace this
-          # step with your own committed keystore (see README) so the signature
-          # stays stable across versions.
           keytool -genkeypair -v \
             -keystore "$RUNNER_TEMP/gks.jks" \
             -storepass gkspass -keypass gkspass \
