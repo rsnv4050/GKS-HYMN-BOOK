@@ -1,0 +1,54 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'ng.org.gks.hymnbook'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "ng.org.gks.hymnbook"
+        minSdk 24
+        targetSdk 35
+        versionCode 2
+        versionName "2.0"
+    }
+
+    // Release signing is read from environment variables so the CI (or you)
+    // can supply a keystore without committing secrets. If they are absent,
+    // the release build still assembles unsigned and the CI signs it itself.
+    signingConfigs {
+        release {
+            def ksPath = System.getenv("GKS_KEYSTORE")
+            if (ksPath != null && new File(ksPath).exists()) {
+                storeFile file(ksPath)
+                storePassword System.getenv("GKS_STORE_PASSWORD")
+                keyAlias System.getenv("GKS_KEY_ALIAS")
+                keyPassword System.getenv("GKS_KEY_PASSWORD")
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            debuggable false
+            if (System.getenv("GKS_KEYSTORE") != null) {
+                signingConfig signingConfigs.release
+            }
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions { jvmTarget = '17' }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.webkit:webkit:1.11.0'
+}
